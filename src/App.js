@@ -16,7 +16,6 @@ class App extends Component {
       this.setState({
         results: data
       });
-      console.log(data)
     })
   };
 
@@ -27,7 +26,11 @@ class App extends Component {
     }, () => {
       if (this.state.query && this.state.query.length > 1) {
         this.getInfo()
-      } else if (!this.state.query) {
+      }
+      if (this.state.query.length <= 1){
+        this.setState({
+          results: []
+        })
       }
     })
   };
