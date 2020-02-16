@@ -1,25 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { ToastContainer } from "react-toastify";
+import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
+import "./App.css";
+import NavBar from "./components/navBar";
+import Search from "./components/search";
+import searchService from "./services/searchService";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <React.Fragment>
+      <ToastContainer />
+      <main className="Main">
+        {/* <NavBar /> */}
+        <BrowserRouter>
+          <Switch>
+            {/* <Route path="/search" component={console.log("In Progress")} /> */}
+            <Route path="/home" component={Search} />
+            <Redirect from="/" exact to="/home" />
+          </Switch>
+        </BrowserRouter>
+      </main>
+    </React.Fragment>
   );
 }
 

@@ -1,0 +1,5 @@
+{
+  "apiEndpoint": {
+    "search": "http://libsoft.io/api/codes/search?q="
+  }
+}
