@@ -1,10 +1,16 @@
 import React, { Component } from "react";
 import searchService from "../services/searchService";
-import axios from "axios";
+import Table from "../common/table";
 
 class Search extends Component {
   state = { search: "hiv", data: [] };
-
+  columns = [
+    {
+      path: "code",
+      label: "code"
+    },
+    { path: "diagnosis", label: "diagnosis" }
+  ];
   renderSearched = async input => {
     console.log(input);
 
@@ -45,14 +51,21 @@ class Search extends Component {
             </li>
           </ul>
         </nav>
-        <ul>
+
+        <Table
+          columns={this.columns}
+          data={this.state.data}
+          // sortColumn={sortColumn}
+          // onSort={onSort}
+        />
+        {/* <ul>
           {this.state.data.map(s => (
             <p>
               {s.code + " "}
               {s.diagnosis}
             </p>
           ))}
-        </ul>
+        </ul> */}
       </body>
     );
   }
