@@ -13,7 +13,6 @@ class Search extends Component {
   ];
   renderSearched = async input => {
     console.log(input);
-
     const { data } = await searchService.search(input);
     console.log(data);
     console.log(input);
@@ -33,7 +32,17 @@ class Search extends Component {
             type="text"
             placeholder="Search"
             aria-label="Search"
+            onKeyDown={e => {
+              if (e.key === "Enter") {
+                var input =
+                  document.getElementById("input").value != null
+                    ? document.getElementById("input").value
+                    : "hiv";
+                this.renderSearched(input);
+              }
+            }}
           />
+
           <ul className="navbar-nav px-3">
             <li className="nav-item text-nowrap">
               <button
