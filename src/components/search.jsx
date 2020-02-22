@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import searchService from "../services/searchService";
 import Table from "../common/table";
+import SimpleCard from "./SimpleCards/SimpleCard";
 
 class Search extends Component {
   state = { search: "hiv", data: [] };
@@ -9,14 +10,15 @@ class Search extends Component {
       path: "code",
       label: "code"
     },
-    { path: "diagnosis", label: "diagnosis" }
+    { path: "diagnosis", label: "diagnosis" },
+    { path: "inclusionTerms", label: "inclusionTerms" }
   ];
   renderSearched = async input => {
     console.log(input);
-    const { data } = await searchService.search(input);
-    console.log(data);
-    console.log(input);
-    this.setState({ data });
+    const data = await searchService.search(input);
+    // console.log(data);
+    console.log(data.data);
+    this.setState({ data: data.data });
   };
 
   render() {
@@ -60,13 +62,18 @@ class Search extends Component {
             </li>
           </ul>
         </nav>
-
-        <Table
-          columns={this.columns}
-          data={this.state.data}
-          // sortColumn={sortColumn}
-          // onSort={onSort}
-        />
+        {this.state.data && (
+          <SimpleCard columns={this.columns} data={this.state.data} />
+        )}
+        {/* 
+        {this.state.data && (
+          <Table
+            columns={this.columns}
+            data={this.state.data}
+            // sortColumn={sortColumn}
+            // onSort={onSort}
+          />
+        )} */}
         {/* <ul>
           {this.state.data.map(s => (
             <p>
