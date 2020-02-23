@@ -1,10 +1,14 @@
-import React, { Component } from "react";
 import searchService from "../services/searchService";
 import Table from "../common/table";
 import SimpleCard from "./SimpleCards/SimpleCard";
+import React, { Component, Fragment } from "react";
+import InfiniteScroll from 'react-infinite-scroll-component';
+import queryString from "query-string";
+
+let page=0;
 
 class Search extends Component {
-  state = { search: "hiv", data: [] };
+  state = { search: "Search", data: [] };
   columns = [
     {
       path: "code",
@@ -13,13 +17,37 @@ class Search extends Component {
     { path: "diagnosis", label: "diagnosis" },
     { path: "inclusionTerms", label: "inclusionTerms" }
   ];
-  renderSearched = async input => {
+
+  async componentDidMount() {
+    const input = queryString.parse(window.location.search);
     console.log(input);
-    const data = await searchService.search(input);
+    const data = await searchService.search(input.q,page);
+    this.setState({data:data.data, search:input.q});
+
+  }
+
+renderNewSearched = async input => {
+  
+  const data = await searchService.search(input,page);
+  this.setState({
+     data: data.data, search:input});
+
+}
+
+
+  renderSearched = async input => {
+
+    // console.log(input);
+    const data = await searchService.search(input,page);
     // console.log(data);
-    console.log(data.data);
-    this.setState({ data: data.data });
+    // console.log("Data obtained ",data.data);
+    // console.log("Page=",page);
+    this.setState({
+       data: this.state.data.concat(data.data) });
+       page++;
+  
   };
+
 
   render() {
     return (
@@ -33,6 +61,7 @@ class Search extends Component {
             className="form-control form-control-dark w-100"
             type="text"
             placeholder="Search"
+            value={this.state.input}
             aria-label="Search"
             onKeyDown={e => {
               if (e.key === "Enter") {
@@ -40,8 +69,15 @@ class Search extends Component {
                   document.getElementById("input").value != null
                     ? document.getElementById("input").value
                     : "hiv";
-                this.renderSearched(input);
+                this.renderNewSearched(input);
               }
+            }}
+            onChange={() => {
+              var input =
+                  document.getElementById("input").value != null
+                    ? document.getElementById("input").value
+                    : "hiv";
+                this.renderNewSearched(input);
             }}
           />
 
@@ -62,27 +98,27 @@ class Search extends Component {
             </li>
           </ul>
         </nav>
-        {this.state.data && (
+       
+       
+        
+        <InfiniteScroll
+          dataLength={this.state.data.length}
+          next={ () => {
+            var input =
+                    document.getElementById("input").value != null
+                      ? document.getElementById("input").value
+                      : "hiv";
+  
+                  this.renderSearched(input);
+                }}
+          hasMore={true}
+        >
+           {this.state.data && (
           <SimpleCard columns={this.columns} data={this.state.data} />
         )}
-        {/* 
-        {this.state.data && (
-          <Table
-            columns={this.columns}
-            data={this.state.data}
-            // sortColumn={sortColumn}
-            // onSort={onSort}
-          />
-        )} */}
-        {/* <ul>
-          {this.state.data.map(s => (
-            <p>
-              {s.code + " "}
-              {s.diagnosis}
-            </p>
-          ))}
-        </ul> */}
+        </InfiniteScroll>
       </body>
+
     );
   }
 }

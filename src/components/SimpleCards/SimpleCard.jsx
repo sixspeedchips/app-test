@@ -6,7 +6,7 @@ import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import _ from "lodash";
-
+import CardCodeTypography from "../CardCodeTypography/CardCodeTypography";
 const useStyles = makeStyles({
   root: {
     width: "100vw"
@@ -44,13 +44,10 @@ function renderCell(item, column, classes) {
   if (column.path === "inclusionTerms") {
     const inclusionTerms = _.get(item, "inclusionTerms");
     // console.log(inclusionTerms);
+    
     if (inclusionTerms) {
-      const inclusion = _.get(inclusionTerms[0], "inclusion");
-      //   console.log(inclusion);
-      return (
-        <Typography className={classes} color="textSecondary">
-          {inclusion}
-        </Typography>
+      return (  
+        CardCodeTypography(inclusionTerms,classes)
       );
     }
     // console.log(_.get(_.get(item, "inclusionTerms"), "inclusion"));
@@ -73,7 +70,17 @@ export default function SimpleCard({ columns, data }) {
         <Card className={classes.root}>
           <CardContent>
             {columns.map(column => renderCell(item, column, classes.pos))}
-            {/* <Typography
+          
+          </CardContent>
+          <CardActions>
+            <Button size="small">Learn More</Button>
+          </CardActions>
+        </Card>
+      ))}
+    </tbody>
+  );
+}
+  {/* <Typography
               className={classes.title}
               color="textSecondary"
               gutterBottom
@@ -91,12 +98,3 @@ export default function SimpleCard({ columns, data }) {
               <br />
               {'"a benevolent smile"'}
             </Typography> */}
-          </CardContent>
-          <CardActions>
-            {/* <Button size="small">Learn More</Button> */}
-          </CardActions>
-        </Card>
-      ))}
-    </tbody>
-  );
-}
