@@ -27,7 +27,7 @@ class Search extends Component {
   }
 
 renderNewSearched = async input => {
-  
+  page=0;  
   const data = await searchService.search(input,page);
   this.setState({
      data: data.data, search:input});
@@ -61,7 +61,7 @@ renderNewSearched = async input => {
             className="form-control form-control-dark w-100"
             type="text"
             placeholder="Search"
-            value={this.state.input}
+            value={this.state.search}
             aria-label="Search"
             onKeyDown={e => {
               if (e.key === "Enter") {
@@ -99,7 +99,7 @@ renderNewSearched = async input => {
           </ul>
         </nav>
        
-       
+       {console.log(page)}
         
         <InfiniteScroll
           dataLength={this.state.data.length}
