@@ -8,7 +8,7 @@ import queryString from "query-string";
 let page=0;
 
 class Search extends Component {
-  state = { search: "Search", data: [] };
+  state = { search: "Search", data: [], list: []};
   columns = [
     {
       path: "code",
@@ -19,32 +19,45 @@ class Search extends Component {
   ];
 
   async componentDidMount() {
+    page=0;
+    console.log(window.location.search);
     const input = queryString.parse(window.location.search);
     console.log(input);
     const data = await searchService.search(input.q,page);
     this.setState({data:data.data, search:input.q});
 
   }
+  
 
-renderNewSearched = async input => {
+  renderSearchedResults = async (render) => {
+    const searchResults = await searchService.compute(render);
+    console.log(searchResults.data);
+    this.setState({list:searchResults.data,search:render, data:[]});
+    };
+
+renderNewSearched = async (input,e) => {
   page=0;  
+  e.preventDefault();
+  window.location.search=`?q=${input}`;
   const data = await searchService.search(input,page);
   this.setState({
      data: data.data, search:input});
 
-}
+};
+// renderNewResults = async (input,e) => {
+//   page=0;  
+//   e.preventDefault();
+//   window.location.search=`?q=${input}`;
+//   const data = await searchService.search(input,page);
+//   this.setState({
+//      data: data.data, search:input});
 
-
-  renderSearched = async input => {
-
-    // console.log(input);
+// }
+  renderSearched = async (input) => {
+    page++;
     const data = await searchService.search(input,page);
-    // console.log(data);
-    // console.log("Data obtained ",data.data);
-    // console.log("Page=",page);
     this.setState({
        data: this.state.data.concat(data.data) });
-       page++;
   
   };
 
@@ -69,7 +82,10 @@ renderNewSearched = async input => {
                   document.getElementById("input").value != null
                     ? document.getElementById("input").value
                     : "hiv";
-                this.renderNewSearched(input);
+
+                this.renderNewSearched(input,e);
+                // window.location.search=`?q=${input}`;
+                // this.setState({Search: input });
               }
             }}
             onChange={() => {
@@ -77,7 +93,8 @@ renderNewSearched = async input => {
                   document.getElementById("input").value != null
                     ? document.getElementById("input").value
                     : "hiv";
-                this.renderNewSearched(input);
+                 this.renderSearchedResults(input);
+
             }}
           />
 
@@ -85,12 +102,12 @@ renderNewSearched = async input => {
             <li className="nav-item text-nowrap">
               <button
                 className="btn btn-primary"
-                onClick={() => {
+                onClick={(e) => {
                   var input =
                     document.getElementById("input").value != null
                       ? document.getElementById("input").value
                       : "hiv";
-                  this.renderSearched(input);
+                      this.renderNewSearched(input,e);
                 }}
               >
                 Search
@@ -99,7 +116,8 @@ renderNewSearched = async input => {
           </ul>
         </nav>
        
-       {console.log(page)}
+        <ul>{this.state.list.map(item=> <li onClick={ (e) => this.renderNewSearched(item,e)}>{item}</li>
+        ) }</ul>
         
         <InfiniteScroll
           dataLength={this.state.data.length}

@@ -14,7 +14,7 @@ export async function search(searchedItem,page) {
 
 export async function compute(searchedItem) {
   return await http.get(
-    "https://libsoft.io/api/compute?q=" + searchedItem
+    "https://libsoft.io/api/suggest?q=" + searchedItem
   );
 }
 
